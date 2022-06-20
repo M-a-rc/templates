@@ -125,6 +125,7 @@ after_bundle do
 
   # Devise install + user
   ########################################
+  generate ('rspec:install')
   generate('devise:install')
   generate('devise', 'User')
 
