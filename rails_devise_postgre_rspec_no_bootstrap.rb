@@ -51,35 +51,6 @@ style = <<~HTML
 HTML
 gsub_file('app/views/layouts/application.html.erb', "<%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>", style)
 
-# Flashes
-########################################
-file 'app/views/shared/_flashes.html.erb', <<~HTML
-  <% if notice %>
-    <div class="alert alert-info alert-dismissible fade show m-1" role="alert">
-      <%= notice %>
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-      </button>
-    </div>
-  <% end %>
-  <% if alert %>
-    <div class="alert alert-warning alert-dismissible fade show m-1" role="alert">
-      <%= alert %>
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-      </button>
-    </div>
-  <% end %>
-HTML
-
-run 'curl -L https://raw.githubusercontent.com/lewagon/awesome-navbars/master/templates/_navbar_wagon.html.erb > app/views/shared/_navbar.html.erb'
-
-inject_into_file 'app/views/layouts/application.html.erb', after: '<body>' do
-  <<-HTML
-
-    <%= render 'shared/navbar' %>
-    <%= render 'shared/flashes' %>
-  HTML
-end
-
 # README
 ########################################
 markdown_file_content = <<-MARKDOWN
@@ -106,7 +77,7 @@ after_bundle do
   # Generators: db + simple form + pages controller
   ########################################
   rails_command 'db:drop db:create db:migrate'
-  generate('simple_form:install', '--bootstrap')
+  generate('simple_form:install')
   generate(:controller, 'pages', 'home', '--skip-routes', '--no-test-framework')
 
   # Routes
@@ -162,10 +133,8 @@ after_bundle do
 
   # Webpacker / Yarn
   ########################################
-  run 'yarn add bootstrap @popperjs/core'
   run "rails webpacker:install:stimulus"
   append_file 'app/javascript/packs/application.js', <<~JS
-    import "bootstrap"
   JS
 
   inject_into_file 'config/webpack/environment.js', before: 'module.exports' do
